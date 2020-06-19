@@ -16,10 +16,14 @@ def ux_ana(x,z):
 def b_par_ana(x,z):
 	return b_par0 * np.exp(1j * (kx * x + kz * z))
 
+def u_perp_ana(x,z):
+	return u_perp0 * np.exp(1j * (kx * x + kz * z))
+
 xi = -2 * omega_i / omega_r
 
 nx = 128
-lx = 8 * abs(xi)
+# lx = 8 * abs(xi)
+lx = 0.5
 x_min = -lx
 x_max =  lx
 dx = (x_max - x_min) / (nx - 1)
@@ -29,15 +33,21 @@ nz = 128
 Lz = 1
 z_min = 0
 z_max =  2 * Lz
-dz = (z_max - z_min) / (nz - 1)
-z = np.linspace(z_min, z_max, nz)
+dz = (z_max - z_min) / nz
+z = np.linspace(z_min + dz / 2, z_max - dz / 2, nz)
 
-X, Z = np.meshgrid(x, z)
+# X, Z = np.meshgrid(x, z)
 
 kx = np.pi / lx
 kz = 2 * np.pi / Lz
-ux0 = 1
-b_par0 = (kz ** 2 * np.cos(alpha) ** 2 - (omega / vA0) ** 2) * ux0 / omega / kx
+
+nabla_perp0 = 1j * (k_perp - kz * np.sin(alpha))
+nabla_par0  = 1j * kz * np.cos(alpha)
+L0          = nabla_par0 ** 2 + omega ** 2 / vA0 ** 2
+
+ux0     = 1
+b_par0  = -L0 / omega / kx * ux0
+u_perp0 = -1j * kx * nabla_perp0 / (L0 + nabla_perp0 ** 2) * ux0
 
 ux_x_min    = ux_ana(x_min, z)
 b_par_x_min = b_par_ana(x_min, z)
