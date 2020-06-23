@@ -25,17 +25,13 @@ def calc_A_u_v(x):
 	return [ab, u, v]
 
 def vector_d(b_par):
+	return -ct.omega * (ct.k_perp * b_par + \
+			1j * np.sin(ct.alpha) / (2 * ct.dz) * (np.roll(b_par,-1) - np.roll(b_par,1)))
 
-	d = np.zeros(ct.nz, dtype=complex)
-	d[1:-1] = -ct.omega * (ct.k_perp * b_par[1:-1] + \
-						   1j * np.sin(ct.alpha) / (2 * ct.dz) * (b_par[2:] - b_par[0:-2]))
-	d[0]    = -ct.omega * (ct.k_perp * b_par[0] + \
-						   1j * np.sin(ct.alpha) / (2 * ct.dz) * (b_par[1]  - b_par[-1]))
-	d[-1]   = -ct.omega * (ct.k_perp * b_par[-1] + \
-						   1j * np.sin(ct.alpha) / (2 * ct.dz) * (b_par[0]  - b_par[-2]))
-	return d
-
-def calc_u_perp(b_par, x):
+def calc_u_perp(x, b_par):
+	# Calculate u_perp by inverting the matrix ab,
+	# Note that A is nearly tridiagonal and so a computationally efficent algorithm can be used
+	# See https://www.cfd-online.com/Wiki/Tridiagonal_matrix_algorithm_-_TDMA_(Thomas_algorithm)
 
 	[ab, u, v] = calc_A_u_v(x)
 	d = vector_d(b_par)

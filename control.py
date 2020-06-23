@@ -28,7 +28,6 @@ def u_perp_ana(x,z):
 # xi = -2 * omega_i / omega_r
 
 nx = 128
-# lx = 8 * abs(xi)
 lx = 0.5
 x_min = 0
 x_max = 2 * lx
@@ -54,3 +53,5 @@ u_perp0 = -1j * kx * nabla_perp0 / (L0 + nabla_perp0 ** 2) * ux0
 ux_x_min     = ux_ana(x_min, z)
 b_par_x_min  = b_par_ana(x_min, z)
 u_perp_x_min = u_perp_ana(x_min, z)
+
+U_x_min = np.concatenate((ux_x_min, b_par_x_min))
