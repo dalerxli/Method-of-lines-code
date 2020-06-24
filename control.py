@@ -28,9 +28,9 @@ def u_perp_ana(x,z):
 # xi = -2 * omega_i / omega_r
 
 nx = 128
-lx = 0.5
+lx = 1
 x_min = 0
-x_max = 2 * lx
+x_max = 5 * lx
 dx = (x_max - x_min) / (nx - 1)
 x = np.linspace(x_min, x_max, nx)
 
