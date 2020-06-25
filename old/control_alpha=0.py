@@ -1,7 +1,5 @@
 import numpy as np
 from scipy.integrate import solve_bvp
-from scipy.interpolate import interp1d
-import tridiag2 as td2
 
 def vA(x,z):
 	return vA0 * (1 + x) * (epsilon + (1 - epsilon) * (1 + np.tanh(np.sin(np.pi * z / Lz) / h0)) / 2)
@@ -18,14 +16,11 @@ def rhox(x,z):
 def ux_ana(x,z):
 	return ux0 * np.log(x - 1j * xi) * sol.sol(z)[0]
 
-# def b_par_ana(x,z):
-# 	return b_par0 * omega ** 2 * rhox(x,z) * sol.sol(z)[0]
-def b_par_ana(x,z0):
-	f = interp1d(z, b_par_x_min)
-	return f(z0)
+def b_par_ana(x,z):
+	return b_par0 * omega ** 2 * rhox(x,z) * sol.sol(z)[0]
 
 def u_perp_ana(x,z):
-	return beta0 / (x - 1j * xi) * sol.sol(z)[0]
+	return u_perp0 / (x - 1j * xi) * sol.sol(z)[0]
 
 def wave_eqn(z, phi, p):
 	omega = p[0]
@@ -76,13 +71,12 @@ X, Z = np.meshgrid(x, z)
 
 nabla_perp0 = 1j * k_perp
 
-beta0 = xi
-ux0     = -nabla_perp0 * beta0
-b_par0  = beta0 / (1j * omega * nabla_perp0)
+u_perp0 = xi
+ux0     = -nabla_perp0 * u_perp0
+b_par0  = u_perp0 / (1j * omega * nabla_perp0)
 
 ux_x_min     = ux_ana(x_min, z)
-# b_par_x_min  = b_par_ana(x_min, z)
-b_par_x_min  = td2.calc_b_par0()
+b_par_x_min  = b_par_ana(x_min, z)
 u_perp_x_min = u_perp_ana(x_min, z)
 
 U_x_min = np.concatenate((ux_x_min, b_par_x_min))

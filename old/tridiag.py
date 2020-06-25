@@ -7,9 +7,8 @@ def calc_A_u_v(x):
 
 	a = np.full(ct.nz, np.cos(ct.alpha) ** 2 / ct.dz ** 2, dtype=complex) # Off diagonal elements
 	b = -2 * a + ct.omega ** 2 / ct.vA(x,ct.z) ** 2                       # Diagonal elements
-	b0 = b[0]
-	b[0]  += b0
-	b[-1] += a[0] ** 2 / b0
+	b[0]  += b[1]
+	b[-1] += a[0] ** 2 / b[1]
 
 	ab = np.zeros((3, ct.nz), dtype=complex)
 	ab[0,:] = a
@@ -18,10 +17,10 @@ def calc_A_u_v(x):
 
 	u = np.zeros(ct.nz, dtype=complex)
 	v = np.zeros(ct.nz, dtype=complex)
-	u[0] = -b0
+	u[0] = -b[1]
 	u[-1] = a[0]
 	v[0] = 1
-	v[-1] = -a[0] / b0
+	v[-1] = -a[0] / b[1]
 
 	return [ab, u, v]
 
